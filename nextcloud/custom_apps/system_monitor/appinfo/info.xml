@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <info>
-    <id>custom_monitor</id>
+    <id>system_monitor</id>
     <name>System monitor</name>
     <summary>CPU, memory, disk, Docker and SSH activity</summary>
     <description>Embeds the system monitor dashboard: CPU, memory and disk usage, running Docker containers and SSH login/attack activity.</description>
     <version>1.0.0</version>
     <author>George</author>
-    <namespace>Bookmarks</namespace>
+    <namespace>SystemMonitor</namespace>
     <category>productivity</category>
     <dependencies>
         <nextcloud min-version="33" max-version="34"/>
     </dependencies>
     <navigations>
         <navigation>
-            <route>custom_monitor.page.index</route>
+            <route>system_monitor.page.index</route>
             <name>Monitor</name>
             <icon>app.svg</icon>
         </navigation>

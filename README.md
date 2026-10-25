@@ -6,7 +6,7 @@ and SSH login/attack activity.
 
 It provides:
 
-- a Nextcloud custom app (`nextcloud/custom_apps/custom_monitor`) that embeds the monitor
+- a Nextcloud custom app (`nextcloud/custom_apps/system_monitor`) that embeds the monitor
 - a Next.js UI at `/bookmarks/pages/monitor` reading JSON files from `WATCH_DIR` (default `/var/www/html`)
 
 The log files themselves (`system.json`, `docker.json`, `access.json`) are produced by a
