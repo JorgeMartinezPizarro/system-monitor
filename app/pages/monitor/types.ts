@@ -15,9 +15,12 @@ export type DockerContainer = {
   name: string;
   /** e.g. "Up 3 days (healthy)", "Up 5 minutes (unhealthy)", "Up 2 hours (Paused)" */
   status: string;
-  /** Percent string as printed by `docker stats`, e.g. "4.21%" */
+  /** Percent string as printed by `docker stats`, e.g. "4.21%": one core = 100%. */
   cpu?: string;
+  /** Share of the host RAM without reclaimable page cache, e.g. "6.75%" (same rule as summary.ram_usage). */
   memory?: string;
+  /** Bytes behind `memory`, when the collector measured it from the container cgroup. */
+  mem_bytes?: number;
 };
 
 export type IpCount = { ip: string; count: number };

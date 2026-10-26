@@ -8,7 +8,7 @@ import PauseCircleOutlineIcon from "@mui/icons-material/PauseCircleOutlined";
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutlined";
 import StopCircleOutlinedIcon from "@mui/icons-material/StopCircleOutlined";
 import { Panel } from "./Panel";
-import { clampPct, groupProjects, STATE_LABEL, type ContainerState } from "@/app/pages/monitor/lib";
+import { clampPct, formatBytes, groupProjects, STATE_LABEL, type ContainerState } from "@/app/pages/monitor/lib";
 import type { DockerContainer } from "@/app/pages/monitor/types";
 
 type Props = {
@@ -85,7 +85,7 @@ export function DockerPanel({ containers, cores }: Props) {
             <StateChip key={s} state={s} count={counts[s]} />
           ))}
         <span className="legend" aria-hidden="true">
-          <span className="legend__item"><i className="swatch swatch--cpu" />CPU (host share)</span>
+          <span className="legend__item"><i className="swatch swatch--cpu" />CPU</span>
           <span className="legend__item"><i className="swatch swatch--ram" />RAM</span>
         </span>
       </div>
@@ -133,7 +133,10 @@ export function DockerPanel({ containers, cores }: Props) {
                         </span>
                         <span className="ctr__usage">
                           <span><i className="swatch swatch--cpu" />{c.cpuPct.toFixed(2)}%</span>
-                          <span><i className="swatch swatch--ram" />{c.memPct.toFixed(2)}%</span>
+                          <span title={c.mem_bytes !== undefined ? formatBytes(c.mem_bytes) : undefined}>
+                            <i className="swatch swatch--ram" />
+                            {c.memPct.toFixed(2)}%
+                          </span>
                         </span>
                       </li>
                     ))}

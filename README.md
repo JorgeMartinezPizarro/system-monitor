@@ -40,7 +40,11 @@ rename, replaced only on success). It logs its start line, failures and recoveri
   mounted, and `iptables -L` for the banned IPs. Only tokens made of IP characters reach `access.json`: the log
   lines carry attacker-controlled text, and the UI turns those IPs into a ban script (`banScript`, which in
   turn only accepts plain IPv4 addresses).
-- `docker.sh` uses the docker CLI on the mounted `/var/run/docker.sock` (`ps`, `stats`).
+- `docker.sh` uses the docker CLI on the mounted `/var/run/docker.sock` (`ps`, `stats`) and measures each
+  container's memory from the host cgroup tree (`/sys/fs/cgroup` mounted read-only at `/host/cgroup`), without
+  the reclaimable page cache, so it is a share of the host RAM measured like `free` measures `system.json`.
+  `docker stats` would count a memory-mapped file as the container's memory, and the containers would add up to
+  more than the host total. Without the mount it falls back to the `docker stats` figure.
 
 ## DEVELOP
 
