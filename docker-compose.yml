@@ -1,10 +1,36 @@
+# Both images together, built from this checkout (production runs them from ideniox/stacks/monitor).
+#   cp .env.example .env && docker compose up -d --build
+# The collector writes the reports into REPORTS_DIR; the UI only reads them. They share nothing else.
 services:
   system-monitor:
+    build: .
     image: jorgemartinezpizarro/system-monitor:latest
     restart: always
     ports:
-      - ${PORT}:3000
+      - "127.0.0.1:${PORT:-3000}:3000"
     environment:
-      - NEXTCLOUD_URL=${NEXTCLOUD_URL}
-      - PORT=${PORT}
-  
+      - NEXTCLOUD_URL=${NEXTCLOUD_URL:?}
+      - MONITOR_GROUP=${MONITOR_GROUP:-admin}
+    volumes:
+      - ${REPORTS_DIR:-./volume/reports}:/reports:ro
+    read_only: true
+    tmpfs: [/tmp, /app/.next/cache]
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+
+  collector:
+    build: ./collector
+    image: jorgemartinezpizarro/system-monitor-collector:latest
+    restart: always
+    init: true
+    network_mode: host          # iptables -L must see the host rules; the collector listens on nothing
+    cap_drop: [ALL]
+    cap_add: [NET_ADMIN]        # read the firewall rules (banned IPs)
+    security_opt: [no-new-privileges:true]
+    read_only: true
+    tmpfs: [/tmp]
+    volumes:
+      - ${REPORTS_DIR:-./volume/reports}:/reports
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /var/log/journal:/var/log/journal:ro
+      - /etc/machine-id:/etc/machine-id:ro

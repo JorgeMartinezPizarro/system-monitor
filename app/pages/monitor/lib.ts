@@ -139,8 +139,11 @@ export function summarizeAccess(access: AccessReport | undefined): AccessSummary
   };
 }
 
+/** The script is pasted into a root shell: only plain IPv4 addresses make it in, whatever the report says. */
+const IPV4 = /^(25[0-5]|2[0-4]\d|1?\d?\d)(\.(25[0-5]|2[0-4]\d|1?\d?\d)){3}$/;
+
 export function banScript(ips: string[]): string {
-  return ips.map((ip) => `iptables -A INPUT -s ${ip} -j DROP`).join(" && ");
+  return ips.filter((ip) => IPV4.test(ip)).map((ip) => `iptables -A INPUT -s ${ip} -j DROP`).join(" && ");
 }
 
 /* ---------- formatting ---------- */

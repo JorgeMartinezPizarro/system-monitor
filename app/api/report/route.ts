@@ -1,10 +1,10 @@
 import { NextResponse } from "next/server";
 import fs from "fs/promises";
 import path from "path";
-import { requireAuth } from "@/app/lib/auth";
+import { AuthError, authDisabled, requireAuth } from "@/app/lib/auth";
 
-// Directory where the private tool writes system.json, docker.json, access.json.
-const WATCH_DIR = process.env.WATCH_DIR || "/var/www/html";
+// Directory where the collector writes system.json, docker.json, access.json, status.json (mounted read-only).
+const WATCH_DIR = process.env.WATCH_DIR || "/reports";
 
 /**
  * GET /api/report?since=<ms>
@@ -15,9 +15,16 @@ const WATCH_DIR = process.env.WATCH_DIR || "/var/www/html";
  * the full snapshot on its first request and only deltas afterwards.
  */
 export async function GET(req: Request) {
-  try {
-    if (process.env.NEXT_PUBLIC_ENABLE_LOGIN === "true") await requireAuth(req);
+  if (!authDisabled()) {
+    try {
+      await requireAuth(req);
+    } catch (err) {
+      if (!(err instanceof AuthError)) console.error(err);
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+  }
 
+  try {
     const since = Number(new URL(req.url).searchParams.get("since") ?? 0) || 0;
 
     const files = (await fs.readdir(/*turbopackIgnore: true*/ WATCH_DIR)).filter((f) => f.endsWith(".json"));

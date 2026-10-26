@@ -1,5 +1,5 @@
 /**
- * Shapes of the JSON reports written by the private producer tool.
+ * Shapes of the JSON reports written by the collector (collector/*.sh).
  * Every field is optional on purpose: the UI must degrade gracefully when a
  * file is missing or a field is absent.
  */

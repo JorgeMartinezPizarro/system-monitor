@@ -4,3 +4,11 @@ node_modules
 .claude
 mock
 *.md
+# settings never enter the image: next build would inline them (see app/lib/auth.ts)
+.env*
+# not part of the UI image
+collector
+nextcloud
+docker-compose.yml
+Dockerfile
+.dockerignore

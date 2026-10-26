@@ -1,0 +1,3 @@
+# The images are built on Linux: scripts and Dockerfiles must keep LF even when edited on Windows.
+*.sh          text eol=lf
+Dockerfile    text eol=lf
