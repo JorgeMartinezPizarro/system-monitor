@@ -37,9 +37,10 @@ rename, replaced only on success). It logs its start line, failures and recoveri
 
 - `/proc` already shows the host cpu, memory and load; the disk is measured on the reports mount (`DISK_PATH`).
 - `ssh.sh` reads the host journal (`/var/log/journal` + `/etc/machine-id`, read-only), or `/var/log/auth.log` if
-  mounted, and `iptables -L` for the banned IPs. Only tokens made of IP characters reach `access.json`: the log
-  lines carry attacker-controlled text, and the UI turns those IPs into a ban script (`banScript`, which in
-  turn only accepts plain IPv4 addresses).
+  mounted, and `iptables -L` for the banned IPs. It counts every failed connection in the window (30 days of
+  journal, or both auth.log files) once, however many log lines sshd wrote for it. Only tokens made of IP
+  characters reach `access.json`: the log lines carry attacker-controlled text, and the UI turns those IPs into a
+  ban script (`banScript`, which in turn only accepts plain IPv4 addresses).
 - `docker.sh` uses the docker CLI on the mounted `/var/run/docker.sock` (`ps`, `stats`) and measures each
   container's memory from the host cgroup tree (`/sys/fs/cgroup` mounted read-only at `/host/cgroup`), without
   the reclaimable page cache, so it is a share of the host RAM measured like `free` measures `system.json`.
