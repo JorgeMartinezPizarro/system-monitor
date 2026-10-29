@@ -18,6 +18,11 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en">
+      <head>
+        {/* With the session cookie: nginx rejects requests without it (see app/app.webmanifest/route.ts). */}
+        <link rel="manifest" href="/bookmarks/app.webmanifest" crossOrigin="use-credentials" />
+        <link rel="apple-touch-icon" href="/bookmarks/icons/icon-180.png" sizes="180x180" />
+      </head>
       <body>{children}</body>
     </html>
   );
