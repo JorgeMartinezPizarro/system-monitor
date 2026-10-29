@@ -129,7 +129,11 @@ export function summarizeAccess(access: AccessReport | undefined): AccessSummary
   const bannedSet = new Set(banned);
   const fails = access?.fails ?? [];
   const logins = [...(access?.login ?? [])].sort((a, b) => b.count - a.count);
-  const attackers = fails.filter((f) => !bannedSet.has(f.ip)).sort((a, b) => b.count - a.count);
+  // An IP that has logged in successfully is a trusted one: a mistyped password must not put it in the ban script.
+  const trusted = new Set(logins.map((l) => l.ip));
+  const attackers = fails
+    .filter((f) => !bannedSet.has(f.ip) && !trusted.has(f.ip))
+    .sort((a, b) => b.count - a.count);
   return {
     logins,
     attackers,
